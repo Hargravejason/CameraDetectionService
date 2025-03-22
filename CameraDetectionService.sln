@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35825.156 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CameraDetectionService", "CameraDetectionService\CameraDetectionService.csproj", "{85189D81-610E-4495-B8DA-0684449ADAF9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CameraDetectionService.Service", "CameraDetectionService.Service\CameraDetectionService.Service.csproj", "{87D8E604-672F-426C-A6CB-591154145CEE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{85189D81-610E-4495-B8DA-0684449ADAF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85189D81-610E-4495-B8DA-0684449ADAF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85189D81-610E-4495-B8DA-0684449ADAF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85189D81-610E-4495-B8DA-0684449ADAF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87D8E604-672F-426C-A6CB-591154145CEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87D8E604-672F-426C-A6CB-591154145CEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87D8E604-672F-426C-A6CB-591154145CEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87D8E604-672F-426C-A6CB-591154145CEE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {69E75433-3D88-4541-A82D-69858FF640D8}
+	EndGlobalSection
+EndGlobal

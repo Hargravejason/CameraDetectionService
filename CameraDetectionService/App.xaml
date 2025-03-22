@@ -1,0 +1,10 @@
+﻿<Application x:Class="CameraDetectionService.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+						 xmlns:tb="http://www.hardcodet.net/taskbar"
+             xmlns:local="clr-namespace:CameraDetectionService"
+             StartupUri="ShellWindow.xaml">
+	<Application.Resources>
+		<!-- Optionally define global styles or resources -->
+	</Application.Resources>
+</Application>

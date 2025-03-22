@@ -1,0 +1,23 @@
+﻿<Window x:Class="CameraDetectionService.OfflineWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:local="clr-namespace:CameraDetectionService"
+        mc:Ignorable="d" 
+        Title="OfflineWindow"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowStartupLocation="CenterScreen"
+        Topmost="True"
+        Width="600"
+        Height="600">
+	<Grid>
+		<Canvas HorizontalAlignment="Center" VerticalAlignment="Center">
+			<Ellipse Width="400" Height="400" Stroke="Red" StrokeThickness="30" Fill="Transparent" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="-200" Canvas.Top="-200"/>
+			<Line X1="50" Y1="50" X2="320" Y2="320" Stroke="Red" StrokeThickness="30" Canvas.Left="-191" Canvas.Top="-175" Height="358" Width="374"/>
+		</Canvas>
+		<TextBlock Text="{Binding TextToShow}" Foreground="Red" FontSize="36" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,450,0,0"/>
+	</Grid>
+</Window>
