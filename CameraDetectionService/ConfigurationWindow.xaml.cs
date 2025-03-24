@@ -80,6 +80,9 @@ public partial class ConfigurationWindow : Window
 
     //re-start the monitoring service
     _monitorService.StartMonitoring();
+
+    //close the window
+    this.Close();
   }
 
 }

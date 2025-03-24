@@ -12,12 +12,13 @@
         WindowStartupLocation="CenterScreen"
         Topmost="True"
         Width="600"
-        Height="600">
-	<Grid>
+        Height="650">
+	<Grid Margin="0,0,0,-75">
+		<TextBlock Text="The following camera(s) are offline!" Foreground="Red" FontSize="36" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,93,0,0" />
 		<Canvas HorizontalAlignment="Center" VerticalAlignment="Center">
 			<Ellipse Width="400" Height="400" Stroke="Red" StrokeThickness="30" Fill="Transparent" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="-200" Canvas.Top="-200"/>
 			<Line X1="50" Y1="50" X2="320" Y2="320" Stroke="Red" StrokeThickness="30" Canvas.Left="-191" Canvas.Top="-175" Height="358" Width="374"/>
 		</Canvas>
-		<TextBlock Text="{Binding TextToShow}" Foreground="Red" FontSize="36" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,450,0,0"/>
+		<TextBlock Text="{Binding TextToShow}" Foreground="Red" FontSize="36" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,573,0,0" Width="600" Height="152" TextWrapping="Wrap" TextAlignment="Center"/>
 	</Grid>
 </Window>

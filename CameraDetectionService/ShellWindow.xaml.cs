@@ -10,6 +10,7 @@ namespace CameraDetectionService;
 public partial class ShellWindow : Window
 {
   private TaskbarIcon _trayIcon;
+  private OfflineWindow _offlineWindow = new OfflineWindow();
 
   // The monitoring service for all cameras
   private MonitorService _cameraMonitorService;
@@ -87,23 +88,17 @@ public partial class ShellWindow : Window
     }
   }
 
-  public OfflineWindow? _offlineWindow { get; set; }
   private void ShowHideOffline(string textToShow, bool show)
   {
     if (show)
     {
       SystemSounds.Exclamation.Play();
-      _offlineWindow = new OfflineWindow(string.Format("{0} is offline!", textToShow));
-      _offlineWindow.Show();
+      _offlineWindow.AddCameratoOffline(textToShow);
     }
     else
     {
       SystemSounds.Asterisk.Play();
-      if (_offlineWindow != null)
-      {
-        _offlineWindow.Hide();
-        _offlineWindow = null;
-      }
+      _offlineWindow.RemoveCameraFromOffline(textToShow);
     }
   }
 
