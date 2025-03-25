@@ -2,6 +2,8 @@
 using CameraDetectionService.Service.Models;
 using CameraDetectionService.Service.Services;
 using Hardcodet.Wpf.TaskbarNotification;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Media;
 using System.Windows;
@@ -12,6 +14,9 @@ namespace CameraDetectionService;
 
 public partial class ShellWindow : Window
 {
+  private IServiceProvider _serviceProvider;
+  private readonly ILogger<ShellWindow> _logger;
+
   private TaskbarIcon _trayIcon;
   private OfflineWindow _offlineWindow = new OfflineWindow();
 
@@ -20,8 +25,11 @@ public partial class ShellWindow : Window
 
   private Dictionary<string, bool> _cameraStatusList = new();
   DateTime startingUp = DateTime.UtcNow;
-  public ShellWindow()
+  public ShellWindow(IServiceProvider serviceProvider)
   {
+    _serviceProvider = serviceProvider;
+    _logger = _serviceProvider.GetRequiredService<ILogger<ShellWindow>>();
+
     InitializeComponent();
 
     // Hide the ShellWindow if you don’t want it visible
@@ -32,7 +40,7 @@ public partial class ShellWindow : Window
     _trayIcon.ContextMenu = (ContextMenu)FindResource("TrayIconContextMenu");
 
     // Initialize the camera monitor
-    _cameraMonitorService = new MonitorService();
+    _cameraMonitorService = new MonitorService(_serviceProvider.GetRequiredService<ILogger<MonitorService>>());
 
     // Subscribe to its status-changed event
     _cameraMonitorService.CameraStatusChanged += OnCameraStatusChanged;
@@ -52,6 +60,10 @@ public partial class ShellWindow : Window
       // If there are cameras to monitor, start the service
       if (config.Cameras.Count != 0)
       {
+        //update the list
+        _cameraStatusList = config.Cameras.ToDictionary(x => x.CameraName, x => false);
+        Dispatcher.Invoke(() => UpdateContextMenu());
+
         //start the service
         _cameraMonitorService.SetConfig(config);
         _cameraMonitorService.StartMonitoring();
@@ -62,7 +74,7 @@ public partial class ShellWindow : Window
     if (_cameraMonitorService.GetConfig().Cameras.Count == 0)
     {
       //no cameras to monitor so show the config window
-      var configWindow = new ConfigurationWindow(_cameraMonitorService);
+      var configWindow = new ConfigurationWindow(_cameraMonitorService, _serviceProvider.GetRequiredService<ILogger<ConfigurationWindow>>());
       configWindow.ShowDialog();
     }
   }
@@ -72,8 +84,22 @@ public partial class ShellWindow : Window
   {
     // Show the config window. In that window, you might
     // let the user add/edit cameras, then call StartMonitoring again.
-    var configWindow = new ConfigurationWindow(_cameraMonitorService);
+    var configWindow = new ConfigurationWindow(_cameraMonitorService, _serviceProvider.GetRequiredService<ILogger<ConfigurationWindow>>());
     configWindow.ShowDialog();
+
+    if (configWindow.Saved)
+    {
+      //update the list
+      _cameraStatusList = _cameraMonitorService.GetConfig().Cameras.ToDictionary(x => x.CameraName, x => false);
+      Dispatcher.Invoke(() => UpdateContextMenu());
+
+      //re-start the monitoring service
+      startingUp = DateTime.UtcNow;
+      _cameraMonitorService.StartMonitoring();
+
+      messages.Add(new("Connecting", $"Re-connecting...", BalloonIcon.Info));
+      Dispatcher.Invoke(() => showBalloon());
+    }
   }
 
   private void ExitMenuItem_Click(object sender, RoutedEventArgs e)
@@ -152,7 +178,7 @@ public partial class ShellWindow : Window
         Header = camera.Key,
         Icon = new Image
         {
-          Source = new BitmapImage(new Uri(camera.Value ? "pack://application:,,,/green_icon.ico" : "pack://application:,,,/red_icon.ico")),
+          Source = new BitmapImage(new Uri(camera.Value ? "pack://application:,,,/Resources/green_icon.ico" : "pack://application:,,,/Resources/red_icon.ico")),
           Width = 16,
           Height = 16
         },
@@ -160,13 +186,6 @@ public partial class ShellWindow : Window
       };
       contextMenu.Items.Add(menuItem);
     }
-
-    // Add separator
-    //contextMenu.Items.Add(new Separator());
-
-    //// Add other menu items
-    //contextMenu.Items.Add(new MenuItem { Header = "Configuration", Click = ConfigMenuItem_Click,  });
-    //contextMenu.Items.Add(new MenuItem { Header = "Exit", Click = ExitMenuItem_Click });
 
     foreach (var item in itemstoKeep)
       contextMenu.Items.Add(item);
@@ -218,11 +237,13 @@ public partial class ShellWindow : Window
   {
     if (show)
     {
+      _logger.LogWarning($"Camera offline: {textToShow}");
       SystemSounds.Exclamation.Play();
       _offlineWindow.AddCameratoOffline(textToShow);
     }
     else
     {
+      _logger.LogWarning($"Camera back online: {textToShow}");
       SystemSounds.Asterisk.Play();
       _offlineWindow.RemoveCameraFromOffline(textToShow);
     }

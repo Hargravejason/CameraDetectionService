@@ -22,7 +22,7 @@
 
 		<!-- The WPF TaskbarIcon from Hardcodet.NotifyIcon.Wpf -->
 		<tb:TaskbarIcon x:Key="TrayIcon"
-                        IconSource="pack://application:,,,/tray.ico"
+                        IconSource="pack://application:,,,/Resources/tray.ico"
                         ToolTipText="Camera Monitor"
                         Visibility="Visible"
 												MenuActivation="LeftOrRightClick"/>

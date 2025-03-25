@@ -1,6 +1,7 @@
 ﻿using CameraDetectionService.Service.Helpers;
 using CameraDetectionService.Service.Models;
 using CameraDetectionService.Service.Services;
+using Microsoft.Extensions.Logging;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Security;
@@ -14,8 +15,10 @@ namespace CameraDetectionService;
 /// </summary>
 public partial class ConfigurationWindow : Window
 {
+  private readonly ILogger<ConfigurationWindow> _logger;
   private readonly MonitorService _monitorService;
   public Config Config { get; set; }
+  public bool Saved { get; set; }
 
   public event PropertyChangedEventHandler PropertyChanged;
 
@@ -24,13 +27,16 @@ public partial class ConfigurationWindow : Window
     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
   }
 
-  public ConfigurationWindow(MonitorService MonitorService)
+  public ConfigurationWindow(MonitorService MonitorService, ILogger<ConfigurationWindow> logger)
   {
     InitializeComponent();
     _monitorService = MonitorService;
 
     Config = _monitorService.GetConfig();
     DataContext = this;
+    _logger = logger;
+
+    _logger.LogInformation("Configuration window opened");
   }
 
   private void AddCameraConfig_Click(object sender, RoutedEventArgs e)
@@ -56,6 +62,8 @@ public partial class ConfigurationWindow : Window
       return;
     }
 
+    _logger.LogInformation($"Testing camera connection: {cameraConfig.CameraName}");
+
     var cts = new CancellationTokenSource(5000);
 
     // Test the camera config
@@ -63,10 +71,12 @@ public partial class ConfigurationWindow : Window
 
     if (connected)
     {
+      _logger.LogInformation($"Connected to camera! {cameraConfig.CameraName}");
       MessageBox.Show("Connected to camera!");
     }
     else
     {
+      _logger.LogInformation($"Failed to connect to camera! {cameraConfig.CameraName}");
       MessageBox.Show("Failed to connect to camera!");
     }
   }
@@ -76,19 +86,19 @@ public partial class ConfigurationWindow : Window
   {
     // If you updated camera configs, you might call:
     // _monitorService.StartMonitoring(updatedCameraList);
-
+    _logger.LogInformation("Closing configuration window");
     this.Close();
   }
 
   private void btnSave_Click(object sender, RoutedEventArgs e)
   {
+    _logger.LogInformation("Saving configuration");
     SettingsHelper.SaveConfig(Config);
 
     //overwrite the current config
     _monitorService.SetConfig(Config);
 
-    //re-start the monitoring service
-    _monitorService.StartMonitoring();
+    Saved = true;
 
     //close the window
     this.Close();

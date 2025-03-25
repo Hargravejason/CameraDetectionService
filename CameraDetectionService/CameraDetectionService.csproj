@@ -2,20 +2,22 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net9.0-windows10.0.17763.0</TargetFramework>
+    <TargetFramework>net9.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon>tray.ico</ApplicationIcon>
+    <ApplicationIcon>Resources/tray.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="green_icon.ico" />
-    <None Remove="red_icon.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Hardcodet.NotifyIcon.WPF" Version="2.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.3" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,9 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="green_icon.ico" />
-    <Resource Include="red_icon.ico" />
-    <Resource Include="tray.ico">
+    <Resource Include="Resources\green_icon.ico" />
+    <Resource Include="Resources\red_icon.ico" />
+    <Resource Include="Resources\tray.ico">
       <CopyToOutputDirectory></CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
@@ -39,13 +41,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Resources\" />
   </ItemGroup>
 </Project>

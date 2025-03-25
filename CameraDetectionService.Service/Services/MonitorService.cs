@@ -1,4 +1,5 @@
 ﻿using CameraDetectionService.Service.Models;
+using Microsoft.Extensions.Logging;
 using RtspClientSharp;
 using System.Collections.Concurrent;
 using System.Net;
@@ -6,8 +7,6 @@ using System.Net.Sockets;
 using System.Text;
 
 namespace CameraDetectionService.Service.Services;
-
-
 
 public class CameraStatusChangedEventArgs : EventArgs
 {
@@ -20,16 +19,16 @@ public class CameraStatusChangedEventArgs : EventArgs
   }
 }
 
-public class MonitorService
+public class MonitorService(ILogger<MonitorService> _logger)
 {
-  private Config _config { get; set; }
+  private Config _config { get; set; } = new();
 
   /// <summary>
   /// Raised when a camera's status changes from online->offline or vice versa.
   /// </summary>
   public event EventHandler<CameraStatusChangedEventArgs> CameraStatusChanged;
 
-  private CancellationTokenSource _cts;
+  private CancellationTokenSource _cts = new();
 
   // Holds the active RtspClient for each camera (so we can disconnect if needed).
   private readonly ConcurrentDictionary<string, CameraModel> _rtspClients = new ConcurrentDictionary<string, CameraModel>();
@@ -47,6 +46,7 @@ public class MonitorService
   {
     StopMonitoring();
 
+    _logger.LogInformation($"Starting camera monitoring. {_config.Cameras.Count()} found.");
     _cts = new CancellationTokenSource();
 
     // For each camera, start an async monitor loop
@@ -66,6 +66,8 @@ public class MonitorService
   /// </summary>
   public void StopMonitoring()
   {
+    _logger.LogInformation("Stopped camera monitoring.");
+
     if (_cts != null && !_cts.IsCancellationRequested)
     {
       _cts.Cancel();
@@ -88,6 +90,7 @@ public class MonitorService
   {
     try
     {
+      _logger.LogInformation($"Testing connection to camera: {camera.Config.CameraName}");
       // Build connection parameters for RtspClientSharp
       var uri = new Uri(camera.Config.RtspUrl);
 
@@ -95,6 +98,7 @@ public class MonitorService
       // If you have camera credentials:
       if (!string.IsNullOrEmpty(camera.Config.Username) && !string.IsNullOrEmpty(camera.Config.Password))
       {
+        _logger.LogInformation($"Testing using credentials for camera: {camera.Config.CameraName}");
         connectionParams = new ConnectionParameters(uri, new NetworkCredential(camera.Config.Username, camera.Config.Password))
         {
           RequiredTracks = RequiredTracks.Video,
@@ -102,6 +106,7 @@ public class MonitorService
       }
       else
       {
+        _logger.LogInformation($"Testing no credentials for camera: {camera.Config.CameraName}");
         connectionParams = new ConnectionParameters(uri)
         {
         };
@@ -120,7 +125,9 @@ public class MonitorService
       // Actually connect
       await client.ConnectAsync(token);
       client.ReceiveAsync(token);
-      
+
+      _logger.LogInformation($"Testing onnection to Camera: {camera.Config.CameraName} established, attempting to receive data.");
+
       while (!connected && !token.IsCancellationRequested)
       {
         await Task.Delay(500);
@@ -130,7 +137,8 @@ public class MonitorService
     }
     catch (Exception ex)
     {
-     return false;
+      _logger.LogError(ex, $"Error testing camera connection: {camera.Config.CameraName}");
+      return false;
     }
   }
 
@@ -143,6 +151,7 @@ public class MonitorService
   {
     try
     {
+      _logger.LogInformation($"Connecting to camera: {camera.Config.CameraName}");
       // Build connection parameters for RtspClientSharp
       var uri = new Uri(camera.Config.RtspUrl);
 
@@ -150,13 +159,15 @@ public class MonitorService
       // If you have camera credentials:
       if(!string.IsNullOrEmpty(camera.Config.Username) && !string.IsNullOrEmpty(camera.Config.Password))
       {
+        _logger.LogInformation($"Using credentials for camera: {camera.Config.CameraName}");
         connectionParams = new ConnectionParameters(uri, new NetworkCredential(camera.Config.Username, camera.Config.Password))
         {
-          RequiredTracks = RequiredTracks.Video,
+          RequiredTracks = RequiredTracks.Video
         };
       }
       else
       {
+        _logger.LogInformation($"No credentials for camera: {camera.Config.CameraName}");
         connectionParams = new ConnectionParameters(uri)
         {
         }; 
@@ -184,11 +195,14 @@ public class MonitorService
       await client.ConnectAsync(token);
       _ = client.ReceiveAsync(token);
 
+      _logger.LogInformation($"Connection to Camera: {camera.Config.CameraName} established, attempting to receive data.");
+
       // Start a mini-loop to watch for frame dropouts
       _ = Task.Run(() => FrameWatcherLoop(camera, token));
     }
     catch (Exception ex)
     {
+      _logger.LogError(ex, $"Error connecting to camera: {camera.Config.CameraName}");
       if (camera.Online)
       {
         camera.Online = false;
@@ -196,6 +210,7 @@ public class MonitorService
       }
       Task.Delay(1000, token).Wait(); // Wait 1 seconds before retrying
       _ = Task.Run(() => TryConnectAndStream(camera, token));
+      _logger.LogError($"Retrying connection to camera: {camera.Config.CameraName}");
     }
   }
 
@@ -236,7 +251,10 @@ public class MonitorService
             return;
           }
         }
-        catch { }
+        catch (Exception ex)
+        { 
+          _logger.LogError(ex, $"Error disconnecting camera: {camera.Config.CameraName}");
+        }
       }
     }
   }
@@ -300,3 +318,4 @@ public class MonitorService
     }
   }
 }
+
