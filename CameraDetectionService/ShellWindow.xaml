@@ -13,17 +13,19 @@
 
 	<Window.Resources>
 		<!-- Context menu for the tray icon -->
-		<ContextMenu x:Key="TrayMenu">
-			<MenuItem Header="Configuration" Click="ConfigMenuItem_Click" />
-			<MenuItem Header="Exit" Click="ExitMenuItem_Click" />
+		<ContextMenu x:Key="TrayIconContextMenu">
+			<MenuItem Header="Camera Status" IsEnabled="False"/>
+			<Separator/>
+			<MenuItem Header="Configuration" Click="ConfigMenuItem_Click"/>
+			<MenuItem Header="Exit" Click="ExitMenuItem_Click"/>
 		</ContextMenu>
 
 		<!-- The WPF TaskbarIcon from Hardcodet.NotifyIcon.Wpf -->
 		<tb:TaskbarIcon x:Key="TrayIcon"
                         IconSource="pack://application:,,,/tray.ico"
                         ToolTipText="Camera Monitor"
-                        ContextMenu="{StaticResource TrayMenu}"
-                        Visibility="Visible" />
+                        Visibility="Visible"
+												MenuActivation="LeftOrRightClick"/>
 	</Window.Resources>
 
 	<Grid>

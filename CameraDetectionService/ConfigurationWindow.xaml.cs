@@ -1,6 +1,9 @@
-﻿using CameraDetectionService.Service.Models;
+﻿using CameraDetectionService.Service.Helpers;
+using CameraDetectionService.Service.Models;
 using CameraDetectionService.Service.Services;
-using System.IO;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Security;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -13,6 +16,13 @@ public partial class ConfigurationWindow : Window
 {
   private readonly MonitorService _monitorService;
   public Config Config { get; set; }
+
+  public event PropertyChangedEventHandler PropertyChanged;
+
+  protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+  {
+    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+  }
 
   public ConfigurationWindow(MonitorService MonitorService)
   {
@@ -72,8 +82,7 @@ public partial class ConfigurationWindow : Window
 
   private void btnSave_Click(object sender, RoutedEventArgs e)
   {
-    //save to the local config file
-    File.WriteAllText("config.json", System.Text.Json.JsonSerializer.Serialize(Config));
+    SettingsHelper.SaveConfig(Config);
 
     //overwrite the current config
     _monitorService.SetConfig(Config);
@@ -156,5 +165,10 @@ public static class PasswordHelper
     passwordBox.SetValue(UpdatingPassword, true);
     SetBoundPassword(passwordBox, passwordBox.Password);
     passwordBox.SetValue(UpdatingPassword, false);
+
+    if (passwordBox.DataContext is CameraConfig cameraConfig)
+    {
+      cameraConfig.Password = passwordBox.Password;
+    }
   }
 }

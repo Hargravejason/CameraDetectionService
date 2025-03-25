@@ -1,7 +1,5 @@
 ﻿using CameraDetectionService.Service.Models;
 using RtspClientSharp;
-using RtspClientSharp.RawFrames.Audio;
-using RtspClientSharp.RawFrames.Video;
 using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
@@ -178,31 +176,13 @@ public class MonitorService
           camera.Online = true;
           CameraStatusChanged?.Invoke(this, new CameraStatusChangedEventArgs(camera, !camera.Online));
         }
-
-        //https://github.com/BogdanovKirill/RtspClientSharp/tree/master
-        switch (frame)
-        {
-          case RawH264IFrame h264IFrame:
-          case RawH264PFrame h264PFrame:
-          case RawJpegFrame jpegFrame:
-          case RawAACFrame aacFrame:
-          case RawG711AFrame g711AFrame:
-          case RawG711UFrame g711UFrame:
-          case RawPCMFrame pcmFrame:
-          case RawG726Frame g726Frame:
-            break;
-        }
-
-
-        // You can also store the last frame if you need:
-        camera.LastFrame = frame;
       };
+
+      camera.Client = client;
            
       // Actually connect
       await client.ConnectAsync(token);
-      client.ReceiveAsync(token);
-
-      camera.Client = client;
+      _ = client.ReceiveAsync(token);
 
       // Start a mini-loop to watch for frame dropouts
       _ = Task.Run(() => FrameWatcherLoop(camera, token));

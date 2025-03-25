@@ -6,16 +6,12 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon>cctv-camera.ico</ApplicationIcon>
+    <ApplicationIcon>tray.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\tray.ico" />
-    <None Remove="TrayIcon.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="cctv-camera.ico" />
+    <None Remove="green_icon.ico" />
+    <None Remove="red_icon.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,6 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="green_icon.ico" />
+    <Resource Include="red_icon.ico" />
     <Resource Include="tray.ico">
       <CopyToOutputDirectory></CopyToOutputDirectory>
     </Resource>
