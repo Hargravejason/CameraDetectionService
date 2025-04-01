@@ -18,7 +18,7 @@ public partial class ShellWindow : Window
   private readonly ILogger<ShellWindow> _logger;
 
   private TaskbarIcon _trayIcon;
-  private OfflineWindow _offlineWindow = new OfflineWindow();
+  private Dictionary<string,OfflineWindow> _offlineWindows = new Dictionary<string, OfflineWindow>();
 
   // The monitoring service for all cameras
   private MonitorService _cameraMonitorService;
@@ -239,13 +239,57 @@ public partial class ShellWindow : Window
     {
       _logger.LogWarning($"Camera offline: {textToShow}");
       SystemSounds.Exclamation.Play();
-      _offlineWindow.AddCameratoOffline(textToShow);
+
+      // Create and show an OfflineWindow on each monitor
+      foreach (var screen in System.Windows.Forms.Screen.AllScreens)
+      {
+        if (!_offlineWindows.ContainsKey(screen.DeviceName))
+        {
+          var offlineWindow = new OfflineWindow();
+
+          // Show the Window
+          offlineWindow.Show();
+
+          // Get the DPI scale for the screen
+          var source = PresentationSource.FromVisual(offlineWindow);
+          double dpiX = 1.0, dpiY = 1.0;
+          if (source != null)
+          {
+            dpiX = source.CompositionTarget.TransformToDevice.M11;
+            dpiY = source.CompositionTarget.TransformToDevice.M22;
+          }
+
+          // Adjust the position and size based on the DPI scale
+          offlineWindow.Top = screen.WorkingArea.Top / dpiY + ((screen.WorkingArea.Height / dpiY / 2) - (offlineWindow.Height / 2));
+          offlineWindow.Left = screen.WorkingArea.Left / dpiX + ((screen.WorkingArea.Width / dpiX / 2) - (offlineWindow.Width / 2));
+
+          // Update the text on the screen
+          offlineWindow.AddCameratoOffline(textToShow);
+
+          // Add to the List
+          _offlineWindows.Add(screen.DeviceName, offlineWindow);
+        }
+        else
+        {
+          // Update the text on the screen
+          _offlineWindows[screen.DeviceName].AddCameratoOffline(textToShow);
+
+          // Show the Window
+          _offlineWindows[screen.DeviceName].Show();
+        }
+      }
     }
     else
     {
       _logger.LogWarning($"Camera back online: {textToShow}");
       SystemSounds.Asterisk.Play();
-      _offlineWindow.RemoveCameraFromOffline(textToShow);
+
+      // Hide and remove all OfflineWindow instances
+      foreach (var offlineWindow in _offlineWindows.Values)
+      {
+        offlineWindow.RemoveCameraFromOffline(textToShow);
+        offlineWindow.Hide();
+      }
     }
   }
   #endregion

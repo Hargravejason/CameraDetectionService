@@ -65,4 +65,13 @@ public partial class OfflineWindow : Window, INotifyPropertyChanged
   {
     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
   }
+
+  private void Button_Click(object sender, RoutedEventArgs e)
+  {
+    // Hide all OfflineWindow instances
+    foreach (var window in Application.Current.Windows.OfType<OfflineWindow>())
+    {
+      window.Hide();
+    }
+  }
 }

@@ -9,16 +9,39 @@
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
-        WindowStartupLocation="CenterScreen"
         Topmost="True"
         Width="600"
-        Height="700">
-	<Grid Margin="0,0,0,0">
-		<TextBlock Text="The following camera(s) are offline!" Foreground="Red" FontSize="36" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,60,0,0" />
-		<Canvas HorizontalAlignment="Center" VerticalAlignment="Center">
-			<Ellipse Width="400" Height="400" Stroke="Red" StrokeThickness="30" Fill="Transparent" HorizontalAlignment="Center" VerticalAlignment="Top" Canvas.Left="-200" Canvas.Top="-227"/>
-			<Line X1="50" Y1="50" X2="320" Y2="320" Stroke="Red" StrokeThickness="30" Canvas.Left="-191" Canvas.Top="-207" Height="358" Width="374" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+        Height="750" WindowStartupLocation="CenterScreen">
+	<Window.Resources>
+		<Style x:Key="RoundedButtonStyle" TargetType="Button">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="Button">
+						<Border Background="{TemplateBinding Background}" 
+                         BorderBrush="{TemplateBinding BorderBrush}" 
+                         BorderThickness="{TemplateBinding BorderThickness}" 
+                         CornerRadius="5">
+							<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Cursor="Hand"/>
+						</Border>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+	</Window.Resources>
+		<StackPanel>
+		<TextBlock Text="The following camera(s) are offline!" Foreground="Red" FontSize="36" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,10,0,0" />
+		<Canvas HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,300,0,0">
+			<Ellipse Width="400" Height="400" Stroke="Red" StrokeThickness="30" Fill="Transparent" HorizontalAlignment="Center" VerticalAlignment="Top" Canvas.Left="-200" Canvas.Top="-283"/>
+			<Line X1="50" Y1="50" X2="320" Y2="320" Stroke="Red" StrokeThickness="30" Canvas.Left="-191" Canvas.Top="-257" Height="358" Width="374" HorizontalAlignment="Center" VerticalAlignment="Top"/>
 		</Canvas>
-		<TextBlock Text="{Binding TextToShow}" Foreground="Red" FontSize="36" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,529,0,0" Width="600" Height="171" TextWrapping="Wrap" TextAlignment="Center"/>
-	</Grid>
+		<TextBlock Text="{Binding TextToShow}" Foreground="Red" FontSize="36" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,130,0,0" Width="600" TextWrapping="Wrap" TextAlignment="Center"/>
+		<Button x:Name="btnClose" Margin="0,10,0,10" HorizontalAlignment="Center" Width="248" Click="Button_Click" IsCancel="True" Content="Dismiss Alert" FontSize="30"  Style="{StaticResource RoundedButtonStyle}">
+			<Button.Background>
+				<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+					<GradientStop Color="#FFFFC3C3"/>
+					<GradientStop Color="#FF935151" Offset="1"/>
+				</LinearGradientBrush>
+			</Button.Background>
+		</Button>
+		</StackPanel>
 </Window>
