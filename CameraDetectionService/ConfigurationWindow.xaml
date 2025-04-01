@@ -3,23 +3,43 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:CameraDetectionService"
+        xmlns:local="clr-namespace:CameraDetectionService.Helpers"
         mc:Ignorable="d"
         Title="Camera Configuration" Height="600" Width="1024">
 	<Window.Resources>
 		<Style x:Key="RoundedButtonStyle" TargetType="Button">
+			<Setter Property="Background">
+				<Setter.Value>
+					<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+						<GradientStop Color="#FF028D98" Offset="1"/>
+						<GradientStop Color="#FF29F0FF" Offset="0"/>
+					</LinearGradientBrush>
+				</Setter.Value>
+			</Setter>
 			<Setter Property="Template">
 				<Setter.Value>
 					<ControlTemplate TargetType="Button">
 						<Border Background="{TemplateBinding Background}" 
-                                BorderBrush="{TemplateBinding BorderBrush}" 
-                                BorderThickness="{TemplateBinding BorderThickness}" 
-                                CornerRadius="5">
+                         BorderBrush="{TemplateBinding BorderBrush}" 
+                         BorderThickness="{TemplateBinding BorderThickness}" 
+                         CornerRadius="5">
 							<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Cursor="Hand"/>
 						</Border>
 					</ControlTemplate>
 				</Setter.Value>
 			</Setter>
+			<Style.Triggers>
+				<Trigger Property="IsEnabled" Value="False">
+					<Setter Property="Background">
+						<Setter.Value>
+							<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+								<GradientStop Color="#FF29F0FF" Offset="1"/>
+								<GradientStop Color="#FF028D98" Offset="0"/>
+							</LinearGradientBrush>
+						</Setter.Value>
+					</Setter>
+				</Trigger>
+			</Style.Triggers>
 		</Style>
 	</Window.Resources>
 	<Grid>
@@ -50,7 +70,7 @@
 											<Label Content="Camera Name:" Width="100" />
 											<TextBox Width="200" Text="{Binding CameraName}" />
 										</StackPanel>
-										<StackPanel Orientation="Horizontal">
+										<!--<StackPanel Orientation="Horizontal">
 											<Label Content="Username:" Width="100" />
 											<TextBox Width="200" Text="{Binding Username}" />
 											<Label Content="Password:" Width="100" />
@@ -61,7 +81,7 @@
 											<TextBox Width="200" Text="{Binding IPAddress}" />
 											<Label Content="Port:" Width="100" />
 											<TextBox Width="100" Text="{Binding Port}" />
-										</StackPanel>
+										</StackPanel>-->
 										<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" >
 											<Label Content="RTSP URL:" Width="100" />
 											<TextBox HorizontalAlignment="Stretch" Text="{Binding RtspUrl}" Width="1000" />
@@ -71,13 +91,8 @@
 											<TextBox Width="100" Text="{Binding RtspPort}" />
 										</StackPanel>-->
 										<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
-											<Button Content="Test Connection" Width="120" Margin="0,10,10,0" Click="Test_Click"  Style="{StaticResource RoundedButtonStyle}" Height="30" >
-												<Button.Background>
-													<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-														<GradientStop Color="#FF028D98" Offset="1"/>
-														<GradientStop Color="#FF29F0FF" Offset="0"/>
-													</LinearGradientBrush>
-												</Button.Background>
+											<Button Content="Test Connection" Width="120" Margin="0,10,10,0" Click="Test_Click" Style="{StaticResource RoundedButtonStyle}" Height="30" >
+
 											</Button>
 											<Button Content="Remove" Width="80" Margin="10,10,0,0" Click="RemoveCameraConfig_Click"  Style="{StaticResource RoundedButtonStyle}" Foreground="White" >
 												<Button.Background>

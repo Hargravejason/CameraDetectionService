@@ -1,6 +1,8 @@
 ﻿using CameraDetectionService.Service.Models;
 using Microsoft.Extensions.Logging;
 using RtspClientSharp;
+using RtspClientSharp.RawFrames;
+using RtspClientSharp.RawFrames.Video;
 using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
@@ -86,61 +88,73 @@ public class MonitorService(ILogger<MonitorService> _logger)
     _rtspClients.Clear();
   }
 
-  public async Task<bool> TestConnection(CameraModel camera, CancellationToken token)
-  {
-    try
-    {
-      _logger.LogInformation($"Testing connection to camera: {camera.Config.CameraName}");
-      // Build connection parameters for RtspClientSharp
-      var uri = new Uri(camera.Config.RtspUrl);
+  //public async Task<bool> TestConnection(CameraModel camera, CancellationToken token)
+  //{
+  //  try
+  //  {
+  //    _logger.LogInformation($"Testing connection to camera: {camera.Config.CameraName}");
+  //    // Build connection parameters for RtspClientSharp
+  //    var uri = new Uri(camera.Config.RtspUrl);
 
-      ConnectionParameters connectionParams;
-      // If you have camera credentials:
-      if (!string.IsNullOrEmpty(camera.Config.Username) && !string.IsNullOrEmpty(camera.Config.Password))
-      {
-        _logger.LogInformation($"Testing using credentials for camera: {camera.Config.CameraName}");
-        connectionParams = new ConnectionParameters(uri, new NetworkCredential(camera.Config.Username, camera.Config.Password))
-        {
-          RequiredTracks = RequiredTracks.Video,
-        };
-      }
-      else
-      {
-        _logger.LogInformation($"Testing no credentials for camera: {camera.Config.CameraName}");
-        connectionParams = new ConnectionParameters(uri)
-        {
-        };
-      }
+  //    ConnectionParameters connectionParams;
+  //    // If you have camera credentials:
+  //    if (!string.IsNullOrEmpty(camera.Config.Username) && !string.IsNullOrEmpty(camera.Config.Password))
+  //    {
+  //      _logger.LogInformation($"Testing using credentials for camera: {camera.Config.CameraName}");
+  //      connectionParams = new ConnectionParameters(uri, new NetworkCredential(camera.Config.Username, camera.Config.Password))
+  //      {
+  //        RequiredTracks = RequiredTracks.Video,
+  //      };
+  //    }
+  //    else
+  //    {
+  //      _logger.LogInformation($"Testing no credentials for camera: {camera.Config.CameraName}");
+  //      connectionParams = new ConnectionParameters(uri)
+  //      {
+  //      };
+  //    }
 
-      var client = new RtspClient(connectionParams);
-      var connected = false;
+  //    var client = new RtspClient(connectionParams);
+  //    var connected = false;
 
-      // Subscribe to frame-received event
-      client.FrameReceived += (sender, frame) =>
-      {
-        // If we were offline, mark online
-        connected = true;
-      };
+  //    // Subscribe to frame-received event
+  //    client.FrameReceived += (sender, frame) =>
+  //    {
+  //      if (frame.Type == FrameType.Audio)
+  //        return;
 
-      // Actually connect
-      await client.ConnectAsync(token);
-      client.ReceiveAsync(token);
+  //      // If we were offline, mark online
+  //      connected = true;
 
-      _logger.LogInformation($"Testing onnection to Camera: {camera.Config.CameraName} established, attempting to receive data.");
+  //      if (frame is RawH264Frame h264Frame)
+  //      {
+  //        // Parse frame to image
+          
+  //      }
 
-      while (!connected && !token.IsCancellationRequested)
-      {
-        await Task.Delay(500);
-      }
-      client.Dispose();
-      return connected;
-    }
-    catch (Exception ex)
-    {
-      _logger.LogError(ex, $"Error testing camera connection: {camera.Config.CameraName}");
-      return false;
-    }
-  }
+  //    };
+
+  //    // Actually connect
+  //    await client.ConnectAsync(token);
+  //    client.ReceiveAsync(token);
+
+  //    _logger.LogInformation($"Testing onnection to Camera: {camera.Config.CameraName} established, attempting to receive data.");
+
+  //    while (!connected && !token.IsCancellationRequested)
+  //    {
+  //      await Task.Delay(500);
+  //    }
+  //    client.Dispose();
+  //    return connected;
+  //  }
+  //  catch (Exception ex)
+  //  {
+  //    _logger.LogError(ex, $"Error testing camera connection: {camera.Config.CameraName}");
+  //    return false;
+  //  }
+  //}
+
+
 
 
   /// <summary>
