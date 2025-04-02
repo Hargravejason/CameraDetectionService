@@ -1,4 +1,5 @@
-﻿using CameraDetectionService.Service.Helpers;
+﻿using CameraDetectionService.Helpers;
+using CameraDetectionService.Service.Helpers;
 using CameraDetectionService.Service.Models;
 using CameraDetectionService.Service.Services;
 using Hardcodet.Wpf.TaskbarNotification;
@@ -8,6 +9,7 @@ using System.IO;
 using System.Media;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media.Imaging;
 
 namespace CameraDetectionService;
@@ -213,25 +215,31 @@ public partial class ShellWindow : Window
     }
 
     // Show a balloon tip or log
-    _trayIcon.ShowBalloonTip(title, message, icon);
-       
+    //_trayIcon.ShowBalloonTip(title, message, icon);
+    var customBalloon = new CustomBalloon
+    {
+      Title = title,
+      Message = message,
+      Icon = icon
+    };
+    _trayIcon.ShowCustomBalloon(customBalloon, PopupAnimation.Slide, 5000);
 
     //create new cancellation token source
     CancellationSource = new CancellationTokenSource();
 
     ////hide it after 5 seconds
-    HideBalloon = Task.Run(async () =>
-    {
-      //wait 5 seconds
-      await Task.Delay(5000, CancellationSource.Token);
+    //HideBalloon = Task.Run(async () =>
+    //{
+    //  //wait 5 seconds
+    //  await Task.Delay(5000, CancellationSource.Token);
 
-      //hide the balloon tip if its not been canceled 
-      if (!CancellationSource.IsCancellationRequested)
-        _trayIcon.HideBalloonTip();
+    //  //hide the balloon tip if its not been canceled 
+    //  if (!CancellationSource.IsCancellationRequested)
+    //    _trayIcon.HideBalloonTip();
 
-      //clear the messages
-      messages = new List<BalloonItem>();
-    }, CancellationSource.Token);
+    //  //clear the messages
+    //  messages = new List<BalloonItem>();
+    //}, CancellationSource.Token);
   }
   private void ShowHideOffline(string textToShow, bool show)
   {

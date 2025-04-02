@@ -10,6 +10,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\error_icon.png" />
+    <None Remove="Resources\info_icon.png" />
+    <None Remove="Resources\warning_icon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Hardcodet.NotifyIcon.WPF" Version="2.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.3" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.3" />
@@ -25,11 +31,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\error_icon.png" />
     <Resource Include="Resources\green_icon.ico" />
+    <Resource Include="Resources\info_icon.png" />
     <Resource Include="Resources\red_icon.ico" />
     <Resource Include="Resources\tray.ico">
       <CopyToOutputDirectory></CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\warning_icon.png" />
   </ItemGroup>
 
   <ItemGroup>
