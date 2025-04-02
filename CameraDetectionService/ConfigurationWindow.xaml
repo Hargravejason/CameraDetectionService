@@ -70,13 +70,13 @@
 											<Label Content="Camera Name:" Width="100" />
 											<TextBox Width="200" Text="{Binding CameraName}" />
 										</StackPanel>
-										<!--<StackPanel Orientation="Horizontal">
+										<StackPanel Orientation="Horizontal">
 											<Label Content="Username:" Width="100" />
 											<TextBox Width="200" Text="{Binding Username}" />
 											<Label Content="Password:" Width="100" />
 											<PasswordBox Width="200" local:PasswordHelper.BindPassword="True" local:PasswordHelper.BoundPassword="{Binding Password}" />
 										</StackPanel>
-										<StackPanel Orientation="Horizontal">
+										<!--<StackPanel Orientation="Horizontal">
 											<Label Content="IP Address:" Width="100" />
 											<TextBox Width="200" Text="{Binding IPAddress}" />
 											<Label Content="Port:" Width="100" />

@@ -69,7 +69,7 @@ public partial class ConfigurationWindow : Window
 
     // Test the camera config
 
-    var (success, message) = await CameraTestingHelper.TestConnectionStats(cameraConfig.RtspUrl, 5, cts.Token);
+    var (success, message) = await CameraTestingHelper.TestConnectionStats(cameraConfig.RtspUrl, cameraConfig.Username, cameraConfig.Password, _logger, 5, cts.Token);
     //var connected = await _monitorService.TestConnection(new CameraModel() { Config = cameraConfig}, cts.Token);
 
     if (success)
