@@ -117,6 +117,8 @@ public class MonitorService(ILogger<MonitorService> _logger)
           RequiredTracks = RequiredTracks.Video
         }; 
       }
+      if (camera.Config.RtspUrl.Contains("fake"))
+        connectionParams.RtpTransport = RtpTransportProtocol.UDP;
 
       var client = new RtspClient(connectionParams);
 

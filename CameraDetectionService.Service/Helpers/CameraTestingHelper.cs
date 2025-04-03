@@ -29,6 +29,8 @@ public static class CameraTestingHelper
         logger.LogInformation($"Connecting with no Username and password on RTSP URL: {rtspUrl}");
         connectionParameters = new ConnectionParameters(new Uri(rtspUrl));
       }
+      if (rtspUrl.Contains("fake"))
+        connectionParameters.RtpTransport = RtpTransportProtocol.UDP;
 
       using var rtspClient = new RtspClient(connectionParameters);
       var frameQueue = new Queue<RawFrame>();
